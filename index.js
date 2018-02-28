@@ -27,6 +27,8 @@ bot.onText(/\/start (.+)/, function (msg, match) {
 bot.onText(/\/stop/, function (msg) {
     var userId = msg.from.id;
 
+    console.log(`Unsubscribe ${userId}`);
+
     subscribers = subscribers.filter(s => s.id !== userId);
 
     bot.sendMessage(userId, `You have successfully unsubscribed from tracking.`);
@@ -38,33 +40,37 @@ bot.on('polling_error', (error) => {
 
 var checkStatus = () => {
     (async () => {
-        const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
+        const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+
+        console.log(`Load page`);
 
         const page = await browser.newPage();
         await page.goto('http://www.reservasparquesnacionales.es/real/ParquesNac/usu/html/inicio-reserva-oapn.aspx?cen=2&act=+1');
 
+        console.log(`navigate next month 1`);
         await Promise.all([
             page.waitForNavigation(),
             page.click('a[title="Go to the next month"]')
         ]);
-
-        await Promise.all([
-            page.waitForNavigation(),
-            page.click('a[title="Go to the next month"]')
-        ]);
-
         var marchSlots = await page.$$('td.dias[style="background-color:WhiteSmoke;width:14%;"]');
+
+        console.log(`navigate next month 2`);
+        await Promise.all([
+            page.waitForNavigation(),
+            page.click('a[title="Go to the next month"]')
+        ]);
+
         if (marchSlots != null && marchSlots.length > 0) {
-            var screen =  await page.screenshot({fullPage: true});
-            
+            var screen = await page.screenshot({ fullPage: true });
+
             var marchSubscribers = subscribers.filter(s => s.month === 'march');
             marchSubscribers.forEach(s => sendSuccessMessage(s.id, 'march', marchSlots.length, screen))
         }
 
         var aprilSlots = await page.$$('td.dias[style="background-color:WhiteSmoke;width:14%;"]');
         if (aprilSlots != null && aprilSlots.length > 0) {
-            var screen =  await page.screenshot({fullPage: true});
-            
+            var screen = await page.screenshot({ fullPage: true });
+
             var marchSubscribers = subscribers.filter(s => s.month === 'april');
             marchSubscribers.forEach(s => sendSuccessMessage(s.id, 'april', aprilSlots.length, screen))
         }
@@ -74,6 +80,7 @@ var checkStatus = () => {
         //     page.waitForNavigation(),
         //   page.click('a[title~="14"]')
         // ]);
+        console.log(`finish`);
 
         await browser.close();
     })();
