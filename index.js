@@ -8,7 +8,7 @@ var bot = new TelegramBot(token, { polling: true });
 var subscribers = [];
 setInterval(function () {
     checkStatus();
-}, 10000);
+}, 60000);
 
 bot.onText(/\/start (.+)/, function (msg, match) {
     var userId = msg.from.id;
