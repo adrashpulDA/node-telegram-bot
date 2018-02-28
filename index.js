@@ -38,7 +38,7 @@ bot.on('polling_error', (error) => {
 
 var checkStatus = () => {
     (async () => {
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
 
         const page = await browser.newPage();
         await page.goto('http://www.reservasparquesnacionales.es/real/ParquesNac/usu/html/inicio-reserva-oapn.aspx?cen=2&act=+1');
