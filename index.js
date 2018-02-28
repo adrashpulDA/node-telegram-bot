@@ -40,6 +40,8 @@ bot.on('polling_error', (error) => {
 
 var checkStatus = () => {
     (async () => {
+        console.log(`Start checking`);
+        
         const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
 
         console.log(`Load page`);
