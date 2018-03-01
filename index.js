@@ -7,7 +7,7 @@ require('node-telegram-bot-api'),
     port = process.env.PORT || 443,
     externalUrl = process.env.CUSTOM_ENV_VARIABLE || 'https://limitless-garden-92898.herokuapp.com',
     token = process.env.TOKEN,
-    bot = new TelegramBot(process.env.TOKEN, { webHook: { port: port }, polling: true });
+    bot = new TelegramBot(process.env.TOKEN, { webHook: { port: port }});
 bot.setWebHook(externalUrl + ':443/bot' + token);
 
 
