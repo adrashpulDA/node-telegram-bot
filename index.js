@@ -3,7 +3,15 @@ var TelegramBot = require('node-telegram-bot-api');
 const { User } = require('./User');
 
 var token = process.env.TOKEN;
-var bot = new TelegramBot(token, { polling: true });
+require('node-telegram-bot-api'),
+    port = process.env.PORT || 443,
+    externalUrl = process.env.CUSTOM_ENV_VARIABLE || 'https://limitless-garden-92898.herokuapp.com',
+    token = process.env.TOKEN,
+    bot = new TelegramBot(process.env.TOKEN, { webHook: { port: port, host: host }, polling: true });
+bot.setWebHook(externalUrl + ':443/bot' + token);
+
+
+// var bot = new TelegramBot(token, { polling: true });
 
 var subscribers = [];
 setInterval(function () {
@@ -41,7 +49,7 @@ bot.on('polling_error', (error) => {
 var checkStatus = () => {
     (async () => {
         console.log(`Start checking`);
-        
+
         const browser = await puppeteer.launch({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
 
         console.log(`Load page`);
@@ -49,11 +57,11 @@ var checkStatus = () => {
         const page = await browser.newPage();
         await page.goto('http://www.reservasparquesnacionales.es/real/ParquesNac/usu/html/inicio-reserva-oapn.aspx?cen=2&act=+1');
 
-        console.log(`navigate next month 1`);
-        await Promise.all([
-            page.waitForNavigation(),
-            page.click('a[title="Go to the next month"]')
-        ]);
+        // console.log(`navigate next month 1`);
+        // await Promise.all([
+        //     page.waitForNavigation(),
+        //     page.click('a[title="Go to the next month"]')
+        // ]);
         var marchSlots = await page.$$('td.dias[style="background-color:WhiteSmoke;width:14%;"]');
 
         console.log(`navigate next month 2`);
